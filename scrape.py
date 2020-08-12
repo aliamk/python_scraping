@@ -4,13 +4,23 @@ import pprint
 
 # Create variable that makes request to website
 res = requests.get('https://news.ycombinator.com/news')
+# Requests from page 2 of website
+res2 = requests.get('https://news.ycombinator.com/news?p=2')
 
 # Convert the string into html
 soup = BeautifulSoup(res.text, 'html.parser')
+soup2 = BeautifulSoup(res2.text, 'html.parser') # For page 2
+
 # Use CSS Selectors to access title and score classes of website
 links = soup.select('.storylink')
 subtext = soup.select('.subtext')
+links2 = soup2.select('.storylink')
+subtext2 = soup2.select('.subtext')
 # votes = soup.select('.score')
+
+# Combine the two pages
+mega_links = links + links2
+mega_subtext = subtext + subtext2
 
 # Sort articles in descending vote order
 def sort_stories_by_votes(hnlist):
@@ -38,7 +48,7 @@ def create_custom_hn(links, subtext):
                 hn.append({'title': title, 'link': href, 'votes': points})
     return sort_stories_by_votes(hn)
 
-pprint.pprint(create_custom_hn(links, subtext))
+pprint.pprint(create_custom_hn(mega_links, mega_subtext))
 
 
 # print(votes[0])
